@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Connecting… — NovaFX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   callback.html — design tokens match index.html exactly
+   ============================================================ */
+:root{
+  --ink-950:#070b14;
+  --ink-900:#0b1220;
+  --ink-850:#101a2c;
+  --ink-800:#141f35;
+  --ink-700:#1c2c48;
+  --line:#22304d;
+  --text-hi:#eef1f8;
+  --text-lo:#93a1c2;
+  --text-faint:#5d6b8c;
+  --teal:#1fd8a4;
+  --teal-dim:#13402f;
+  --rose:#ff5c72;
+  --rose-dim:#3f1a23;
+  --amber:#ffb020;
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{
+  height:100%;
+  background:var(--ink-950);
+  color:var(--text-hi);
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.shell{
+  min-height:100vh;
+  max-width:480px;
+  margin:0 auto;
+  background:var(--ink-900);
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 0 60px rgba(0,0,0,.5);
+}
+/* header */
+.topbar{
+  height:56px;
+  display:flex;
+  align-items:center;
+  padding:0 14px;
+  background:linear-gradient(180deg,var(--ink-850),var(--ink-900));
+  border-bottom:1px solid var(--line);
+}
+.brand{
+  display:flex;align-items:center;gap:8px;
+  font-family:'Sora',sans-serif;font-weight:700;font-size:15.5px;
+}
+.brand .dot{
+  width:9px;height:9px;border-radius:3px;
+  background:var(--teal);box-shadow:0 0 10px var(--teal);
+  transform:rotate(45deg);flex:none;
+}
+/* main card */
+.stage{
+  flex:1;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px 16px;
+}
+.card{
+  width:100%;
+  background:var(--ink-850);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:28px 20px 24px;
+  text-align:center;
+}
+.icon{
+  font-size:48px;
+  margin-bottom:16px;
+  display:block;
+  line-height:1;
+}
+.icon.spin{
+  animation:spin 1.4s linear infinite;
+  display:inline-block;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+h1{
+  font-family:'Sora',sans-serif;
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:8px;
+  letter-spacing:-0.01em;
+}
+.body-text{
+  font-size:13px;
+  color:var(--text-lo);
+  line-height:1.6;
+  margin-bottom:18px;
+}
+/* progress bar */
+.progress-wrap{
+  width:100%;
+  background:var(--ink-800);
+  border-radius:99px;
+  height:5px;
+  margin-bottom:20px;
+  overflow:hidden;
+}
+.progress-bar{
+  height:100%;
+  border-radius:99px;
+  background:var(--teal);
+  width:0%;
+  transition:width 0.4s ease;
+}
+/* step list */
+.steps{
+  text-align:left;
+  margin-bottom:20px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.step{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:12.5px;
+}
+.step-dot{
+  width:20px;height:20px;border-radius:50%;
+  border:2px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex:none;margin-top:1px;
+  color:var(--text-faint);
+  background:var(--ink-800);
+  transition:all .3s;
+}
+.step-dot.done{background:var(--teal);border-color:var(--teal);color:#04241a;}
+.step-dot.active{border-color:var(--teal);color:var(--teal);animation:pulse 1s ease infinite;}
+.step-dot.err{background:var(--rose-dim);border-color:var(--rose);color:var(--rose);}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(31,216,164,.4);}50%{box-shadow:0 0 0 5px rgba(31,216,164,0);}}
+.step-label{line-height:1.45;color:var(--text-lo);}
+.step-label b{color:var(--text-hi);font-weight:600;}
+/* code block */
+.codeblock{
+  background:var(--ink-950);border:1px solid var(--line);border-radius:10px;
+  padding:11px 12px;font-family:'JetBrains Mono',monospace;font-size:10.5px;
+  line-height:1.6;color:#a9e8d4;overflow-x:auto;white-space:pre;
+  text-align:left;margin-bottom:14px;
+}
+/* buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  border:none;border-radius:11px;font-family:'Inter',sans-serif;
+  font-weight:700;font-size:13px;padding:11px 16px;cursor:pointer;
+  width:100%;margin-bottom:8px;
+}
+.btn-teal{background:var(--teal);color:#04241a;}
+.btn-ghost{background:var(--ink-800);color:var(--text-hi);border:1px solid var(--line);}
+.btn:last-child{margin-bottom:0;}
+/* status pill */
+.pill{
+  display:inline-block;font-size:9.5px;font-weight:700;
+  padding:2px 8px;border-radius:99px;letter-spacing:.03em;
+}
+.pill-teal{background:var(--teal-dim);color:var(--teal);}
+.pill-rose{background:var(--rose-dim);color:var(--rose);}
+.pill-amber{background:#3a2a0c;color:var(--amber);}
+/* detail section */
+.detail{
+  border-top:1px solid var(--line);
+  margin-top:18px;padding-top:14px;
+  text-align:left;
+}
+.detail-row{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  font-size:11.5px;padding:6px 0;border-bottom:1px solid rgba(34,48,77,.5);
+  gap:10px;
+}
+.detail-row:last-child{border-bottom:none;}
+.detail-key{color:var(--text-faint);flex:none;}
+.detail-val{color:var(--text-lo);word-break:break-all;text-align:right;font-family:'JetBrains Mono',monospace;font-size:10.5px;}
+/* footer note */
+.footnote{font-size:10.5px;color:var(--text-faint);margin-top:14px;line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="dot"></span>
+      NOVA<span style="color:var(--teal)">FX</span>
+    </div>
+    <span style="margin-left:10px;font-size:11px;color:var(--text-faint);">OAuth2 Callback</span>
+  </header>
+
+  <main class="stage">
+    <div class="card" id="mainCard">
+      <span class="icon" id="stateIcon">⏳</span>
+      <h1 id="stateTitle">Connecting…</h1>
+      <p class="body-text" id="stateBody">Processing your sign-in with Deriv.</p>
+
+      <div class="progress-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <div class="steps" id="stepList">
+        <div class="step" id="step1">
+          <div class="step-dot" id="dot1">1</div>
+          <div class="step-label"><b>Verify state</b><br>Checking the security token matches what this tab generated.</div>
+        </div>
+        <div class="step" id="step2">
+          <div class="step-dot" id="dot2">2</div>
+          <div class="step-label"><b>Exchange code</b><br>Sending the authorization code to your backend for a token.</div>
+        </div>
+        <div class="step" id="step3">
+          <div class="step-dot" id="dot3">3</div>
+          <div class="step-label"><b>Complete sign-in</b><br>Saving the session and returning you to the app.</div>
+        </div>
+      </div>
+
+      <div id="detailSection" style="display:none;"></div>
+      <div id="actionButtons" style="display:none;"></div>
+      <p class="footnote" id="footnote"></p>
+    </div>
+  </main>
+
+</div>
+
+<script>
+/* ============================================================
+   callback.html — OAuth2 + PKCE callback handler
+   Mirrors exactly the session-storage keys and exchange logic
+   used by index.html, so both pages share the same PKCE state.
+
+   ─── CONFIGURATION ──────────────────────────────────────────
+   Keep these in sync with the CONFIG block at the top of
+   index.html. The only values this page needs are:
+   • appId               — your Deriv OAuth2 app ID
+   • mainAppUrl          — where to send the user after sign-in
+   • tokenExchangeUrl    — your deployed backend endpoint
+                           (empty = show manual-step instructions)
+   • pkceTokenUrl        — Deriv's own token endpoint (for cURL ref)
+   ─────────────────────────────────────────────────────────── */
+var CB_CONFIG = {
+  appId: "33xKEkZTCmdMLUUCSiL17",
+  scope: "trade admin trading_information",
+  // Resolves to index.html in the same directory as callback.html — works on any host.
+  mainAppUrl: (function(){
+    var parts = window.location.href.split("/");
+    parts[parts.length - 1] = "index.html";
+    return parts.join("/").split("?")[0].split("#")[0];
+  })(),
+  // Point this at your deployed backend once you have it running.
+  // e.g. "https://your-backend.example.com/api/deriv/token"
+  // Leave empty to show the manual-step instructions instead.
+  tokenExchangeUrl: "",
+  pkceTokenUrl: "https://auth.deriv.com/oauth2/token",
+  redirectBackDelayMs: 2200
+};
+
+/* ============================================================
+   Tiny DOM helpers
+   ============================================================ */
+function $(id){ return document.getElementById(id); }
+function setText(id, txt){ var el=$(id); if(el) el.textContent=txt; }
+function setHTML(id, html){ var el=$(id); if(el) el.innerHTML=html; }
+function show(id){ var el=$(id); if(el) el.style.display=""; }
+function hide(id){ var el=$(id); if(el) el.style.display="none"; }
+
+function ss_get(k){ try{ return window.sessionStorage.getItem(k); }catch(e){ return null; } }
+function ss_set(k,v){ try{ window.sessionStorage.setItem(k,v); }catch(e){} }
+function ss_del(k){ try{ window.sessionStorage.removeItem(k); }catch(e){} }
+
+/* ============================================================
+   Step indicator helpers
+   ============================================================ */
+function stepDone(n){
+  var d = $("dot"+n);
+  if(d){ d.className="step-dot done"; d.textContent="✓"; }
+}
+function stepActive(n){
+  var d = $("dot"+n);
+  if(d){ d.className="step-dot active"; d.textContent=n; }
+}
+function stepError(n){
+  var d = $("dot"+n);
+  if(d){ d.className="step-dot err"; d.textContent="✕"; }
+}
+function setProgress(pct){
+  var bar=$("progressBar");
+  if(bar) bar.style.width=pct+"%";
+}
+
+/* ============================================================
+   Final UI states
+   ============================================================ */
+function showSuccess(title, body, detail){
+  $("stateIcon").textContent = "✅";
+  $("stateIcon").classList.remove("spin");
+  setText("stateTitle", title);
+  setText("stateBody", body);
+  setProgress(100);
+  stepDone(1); stepDone(2); stepDone(3);
+  if(detail){
+    show("detailSection");
+    $("detailSection").innerHTML = detail;
+  }
+  $("footnote").textContent = "Returning you to the app…";
+}
+
+function showError(title, body, step, detail, showRetry){
+  $("stateIcon").textContent = "⚠️";
+  $("stateIcon").classList.remove("spin");
+  setText("stateTitle", title);
+  setHTML("stateBody", body);
+  if(step) stepError(step);
+
+  if(detail){
+    show("detailSection");
+    $("detailSection").innerHTML = detail;
+  }
+
+  show("actionButtons");
+  var btns = "";
+  if(showRetry){
+    btns += '<button class="btn btn-teal" onclick="window.location.href=CB_CONFIG.mainAppUrl">↩ Try signing in again</button>';
+  }
+  btns += '<button class="btn btn-ghost" onclick="window.location.href=CB_CONFIG.mainAppUrl">← Back to NovaFX</button>';
+  $("actionButtons").innerHTML = btns;
+  $("footnote").textContent = "";
+}
+
+function showNoBackend(code, verifier){
+  // No backend configured — PKCE steps 1-3 succeeded but we can't
+  // do step 4 here. Show the user exactly what they need to do.
+  $("stateIcon").textContent = "🔑";
+  $("stateIcon").classList.remove("spin");
+  setText("stateTitle", "One step left — backend not configured");
+  $("stateBody").innerHTML =
+    'Deriv approved the sign-in. The final step exchanges this code for an access token, ' +
+    'but that <b>must happen on a server</b> (it requires your app\'s <span style="font-family:monospace">client_secret</span>). ' +
+    'Two options:';
+  stepDone(1);
+  stepError(2);
+
+  show("detailSection");
+  $("detailSection").innerHTML =
+    '<div class="detail">' +
+      '<div style="font-size:11.5px;color:var(--text-lo);margin-bottom:10px;font-weight:600;">Option A — deploy the backend (recommended)</div>' +
+      '<div class="detail-row"><span class="detail-key">1.</span><span class="detail-val" style="text-align:left;">Deploy <span style="color:#a9e8d4">server/token-exchange.js</span> or <span style="color:#a9e8d4">worker/token-exchange-worker.js</span> from the backend repo.</span></div>' +
+      '<div class="detail-row"><span class="detail-key">2.</span><span class="detail-val" style="text-align:left;">Set <span style="color:#a9e8d4">CB_CONFIG.tokenExchangeUrl</span> in callback.html and <span style="color:#a9e8d4">CONFIG.tokenExchangeEndpoint</span> in index.html to its URL.</span></div>' +
+      '<div class="detail-row"><span class="detail-key">3.</span><span class="detail-val" style="text-align:left;">Sign in again — the exchange will complete automatically.</span></div>' +
+      '<div style="font-size:11.5px;color:var(--text-lo);margin:14px 0 10px;font-weight:600;">Option B — exchange manually with cURL (testing only)</div>' +
+      '<div class="codeblock">curl -X POST ' + CB_CONFIG.pkceTokenUrl + ' \\\n' +
+        '  -H "Content-Type: application/x-www-form-urlencoded" \\\n' +
+        '  -d "grant_type=authorization_code" \\\n' +
+        '  -d "client_id=' + CB_CONFIG.appId + '" \\\n' +
+        '  -d "client_secret=YOUR_CLIENT_SECRET" \\\n' +
+        '  -d "code=' + code.slice(0,8) + '… (full code discarded for security)" \\\n' +
+        '  -d "code_verifier=YOUR_VERIFIER (also discarded)" \\\n' +
+        '  -d "redirect_uri=' + window.location.origin + window.location.pathname + '"' +
+      '</div>' +
+    '</div>';
+
+  show("actionButtons");
+  $("actionButtons").innerHTML =
+    '<button class="btn btn-teal" onclick="window.location.href=CB_CONFIG.mainAppUrl">← Back to NovaFX</button>';
+  $("footnote").textContent = "The code was discarded — it cannot be reused. Start a fresh sign-in once your backend is deployed.";
+}
+
+/* ============================================================
+   Token exchange (Step 4) — calls your backend
+   ============================================================ */
+function exchangeCode(code, verifier){
+  return fetch(CB_CONFIG.tokenExchangeUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      code: code,
+      code_verifier: verifier,
+      redirect_uri: window.location.origin + window.location.pathname,
+      client_id: CB_CONFIG.appId
+    })
+  }).then(function(res){
+    return res.json().then(function(data){
+      if(!res.ok){
+        var msg = data.error_description || data.error || ("HTTP " + res.status);
+        var err = new Error(msg);
+        err.data = data;
+        throw err;
+      }
+      return data;
+    });
+  });
+}
+
+/* ============================================================
+   Legacy Deriv callback: ?acct1=..&token1=..&cur1=..
+   (Fired when Deriv's oauth.deriv.com redirects here instead
+   of back to index.html — e.g. if this is the registered URL.)
+   ============================================================ */
+function handleLegacyCallback(qs){
+  stepActive(1);
+  var accounts = [];
+  var i = 1;
+  while(qs.has("acct" + i)){
+    accounts.push({
+      loginid: qs.get("acct" + i),
+      token:   qs.get("token" + i),
+      currency:(qs.get("cur" + i) || "").toUpperCase(),
+      isVirtual: /^VR/i.test(qs.get("acct" + i) || "")
+    });
+    i++;
+  }
+  // Scrub the URL immediately so tokens don't linger in browser history.
+  window.history.replaceState({}, document.title, window.location.pathname);
+
+  if(!accounts.length){
+    showError(
+      "No accounts returned",
+      "Deriv redirected here but didn't include any account tokens in the URL. Please try signing in again.",
+      1, null, true
+    );
+    return;
+  }
+
+  stepDone(1);
+  stepActive(2);
+  setProgress(66);
+
+  // Pass the account list to index.html via sessionStorage, then redirect.
+  ss_set("cb_legacy_accounts", JSON.stringify(accounts));
+  ss_set("cb_type", "legacy");
+
+  stepDone(2);
+  setProgress(90);
+  stepActive(3);
+
+  var real = accounts.find(function(a){ return !a.isVirtual; }) || accounts[0];
+  showSuccess(
+    "Accounts received ✓",
+    "Connected as " + real.loginid + (accounts.length > 1 ? " (+" + (accounts.length-1) + " more)" : "") + ". Returning to NovaFX…",
+    buildLegacyDetail(accounts)
+  );
+  stepDone(3);
+
+  setTimeout(function(){
+    window.location.href = CB_CONFIG.mainAppUrl + "?cb=legacy";
+  }, CB_CONFIG.redirectBackDelayMs);
+}
+
+function buildLegacyDetail(accounts){
+  var rows = accounts.map(function(a){
+    return '<div class="detail-row">' +
+      '<span class="detail-key">' + a.loginid + '</span>' +
+      '<span class="detail-val">' + (a.currency||"—") + ' · <span class="pill ' + (a.isVirtual?"pill-amber":"pill-teal") + '">' + (a.isVirtual?"DEMO":"REAL") + '</span></span>' +
+      '</div>';
+  }).join("");
+  return '<div class="detail">' + rows + '</div>';
+}
+
+/* ============================================================
+   PKCE callback: ?code=..&state=..
+   ============================================================ */
+function handlePkceCallback(qs){
+  var code          = qs.get("code");
+  var returnedState = qs.get("state");
+  var savedState    = ss_get("pkce_oauth_state");
+  var verifier      = ss_get("pkce_code_verifier");
+
+  // Scrub the URL immediately — the auth code is one-time-use.
+  window.history.replaceState({}, document.title, window.location.pathname);
+
+  // ── Step 1: verify state (CSRF protection) ──────────────────
+  stepActive(1);
+  setProgress(20);
+
+  if(!savedState){
+    showError(
+      "Session expired",
+      "No PKCE state was found in this browser session. This can happen if the tab was refreshed, if you navigated here directly, or if sessionStorage was cleared. Please start a fresh sign-in.",
+      1, null, true
+    );
+    return;
+  }
+  if(returnedState !== savedState){
+    showError(
+      "Security check failed",
+      "The state returned by Deriv didn't match what this tab generated. This is a CSRF protection — the code was discarded. If you didn't do anything unusual, please try signing in again.",
+      1, null, true
+    );
+    ss_del("pkce_oauth_state");
+    ss_del("pkce_code_verifier");
+    return;
+  }
+  if(!verifier){
+    showError(
+      "Code verifier missing",
+      "The PKCE code_verifier for this session was not found — it may have been cleared when the tab was reset. Please start a fresh sign-in.",
+      1, null, true
+    );
+    ss_del("pkce_oauth_state");
+    return;
+  }
+
+  // State matched — consume both secrets immediately.
+  ss_del("pkce_oauth_state");
+  ss_del("pkce_code_verifier");
+
+  stepDone(1);
+  setProgress(40);
+
+  // ── Step 2: exchange code for token ─────────────────────────
+  stepActive(2);
+
+  if(!CB_CONFIG.tokenExchangeUrl){
+    // No backend configured — show instructions instead of failing silently.
+    showNoBackend(code, verifier);
+    return;
+  }
+
+  setText("stateTitle", "Exchanging code…");
+  setText("stateBody", "Sending the authorization code to your backend. This should take less than a second.");
+  setProgress(60);
+
+  exchangeCode(code, verifier).then(function(tok){
+    if(!tok.access_token){
+      throw new Error("Backend returned a success response but it contained no access_token.");
+    }
+
+    stepDone(2);
+    setProgress(85);
+    stepActive(3);
+
+    // Store the PKCE session result so index.html picks it up on load.
+    ss_set("cb_pkce_token", JSON.stringify({
+      access_token:  tok.access_token,
+      token_type:    tok.token_type  || "Bearer",
+      expires_in:    tok.expires_in  || 3600,
+      refresh_token: tok.refresh_token || null,
+      obtained_at:   Date.now()
+    }));
+    ss_set("cb_type", "pkce");
+
+    var expMins = Math.round((tok.expires_in || 3600) / 60);
+    showSuccess(
+      "Signed in ✓",
+      "OAuth2 + PKCE token obtained. Scopes: " + CB_CONFIG.scope + ". Returning to NovaFX…",
+      '<div class="detail">' +
+        '<div class="detail-row"><span class="detail-key">Token type</span><span class="detail-val">' + (tok.token_type||"Bearer") + '</span></div>' +
+        '<div class="detail-row"><span class="detail-key">Expires in</span><span class="detail-val">' + expMins + ' min</span></div>' +
+        '<div class="detail-row"><span class="detail-key">Refresh token</span><span class="detail-val">' + (tok.refresh_token ? "included" : "not issued") + '</span></div>' +
+        '<div class="detail-row"><span class="detail-key">Scopes</span><span class="detail-val">' + CB_CONFIG.scope + '</span></div>' +
+      '</div>'
+    );
+    stepDone(3);
+
+    setTimeout(function(){
+      window.location.href = CB_CONFIG.mainAppUrl + "?cb=pkce";
+    }, CB_CONFIG.redirectBackDelayMs);
+
+  }).catch(function(err){
+    stepError(2);
+    var detail = "";
+    if(err.data){
+      detail = '<div class="detail">' +
+        '<div class="detail-row"><span class="detail-key">error</span><span class="detail-val">' + (err.data.error||"—") + '</span></div>' +
+        '<div class="detail-row"><span class="detail-key">description</span><span class="detail-val">' + (err.data.error_description||"—") + '</span></div>' +
+      '</div>';
+    }
+    showError(
+      "Token exchange failed",
+      "Your backend returned an error: <b>" + escHtml(err.message || "unknown error") + "</b>. Check your <span style='font-family:monospace'>client_secret</span>, the backend logs, and that CORS allows this origin.",
+      2, detail, true
+    );
+  });
+}
+
+function escHtml(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+/* ============================================================
+   Handle ?cb=legacy or ?cb=pkce from a redirect-back — index.html
+   reads the sessionStorage and finishes the handshake on its own,
+   so callback.html just needs to show a brief "completing" state.
+   ============================================================ */
+function handleReturnFlag(qs){
+  // Nothing to do here — index.html reads cb_type / cb_legacy_accounts /
+  // cb_pkce_token from sessionStorage and handles them on load.
+  // This branch only fires if somehow callback.html gets the ?cb= param,
+  // which shouldn't happen in normal flow.
+  window.location.href = CB_CONFIG.mainAppUrl;
+}
+
+/* ============================================================
+   Entry point — inspect the URL and route to the right handler
+   ============================================================ */
+(function init(){
+  $("stateIcon").classList.add("spin");
+  stepActive(1);
+  setProgress(10);
+
+  var qs = new URLSearchParams(window.location.search);
+
+  // OAuth error shape: ?error=access_denied&error_description=...
+  if(qs.has("error")){
+    window.history.replaceState({}, document.title, window.location.pathname);
+    var desc = qs.get("error_description") || qs.get("error") || "Unknown error";
+    var code = qs.get("error") || "";
+    showError(
+      code === "access_denied" ? "Sign-in cancelled" : "Authorisation error",
+      escHtml(decodeURIComponent(desc.replace(/\+/g," "))),
+      1,
+      '<div class="detail"><div class="detail-row"><span class="detail-key">error code</span><span class="detail-val">' + escHtml(code) + '</span></div></div>',
+      true
+    );
+    ss_del("pkce_oauth_state");
+    ss_del("pkce_code_verifier");
+    return;
+  }
+
+  // Legacy redirect: ?acct1=..&token1=..
+  if(qs.has("acct1")){
+    handleLegacyCallback(qs);
+    return;
+  }
+
+  // PKCE redirect: ?code=..&state=..
+  if(qs.has("code") && qs.has("state")){
+    handlePkceCallback(qs);
+    return;
+  }
+
+  // Already-handled redirect (e.g. browser back button on this page)
+  if(qs.has("cb")){
+    handleReturnFlag(qs);
+    return;
+  }
+
+  // Nothing in the URL — probably opened directly.
+  $("stateIcon").textContent = "🔒";
+  $("stateIcon").classList.remove("spin");
+  setText("stateTitle", "Nothing to process");
+  setText("stateBody", "This page handles Deriv's OAuth2 redirect — it shouldn't be opened directly. Start a sign-in from the main app.");
+  setProgress(0);
+  hide("stepList");
+  show("actionButtons");
+  $("actionButtons").innerHTML = '<button class="btn btn-teal" onclick="window.location.href=CB_CONFIG.mainAppUrl">← Go to NovaFX</button>';
+})();
+</script>
+</body>
+</html>
